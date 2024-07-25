@@ -46,6 +46,7 @@ const upload = multer({ storage: multer.memoryStorage() });  // Configure multer
 Route.use('/PostAdInSell', checkUserAuth)
 Route.use('/GetAdsByCatagories', checkUserAuth)
 Route.use('/GetAllSellAds', checkUserAuth)
+Route.use('/DeleteSellAds', checkUserAuth)
 //installment route
 Route.use('/PostAdsInInstallment', checkUserAuth)
 Route.use('/GetInstallmentAdsByCatagories', checkUserAuth)
@@ -74,6 +75,7 @@ Route.post('/getUserById', UserController.getUserById)
 Route.post('/PostAdInSell', Post_Sell_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdInSell)
 Route.post('/GetSellAdsByCatagories', AdPostController.GetSellAdsByCatagories)
 Route.post('/GetAllSellAds', AdPostController.GetAllSellAds)
+Route.post('/DeleteSellAds/:ID', AdPostController.DeleteSellAds)
 
 //Installment Route
 Route.post('/PostAdsInInstallment', Post_Installment_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdsInInstallment)

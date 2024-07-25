@@ -94,35 +94,54 @@ class AdPostController {
 
         const perPage = 10; // Number of items per page
 
-        const ads = await PostAdInSellModal.find({ Catagories: catagories })
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
+
+        try {
+            const DeleteAllAdsAbove30 = await PostAdInSellModal.find({ createdAt: { $lte: thirtyDaysAgo } })
+            if(DeleteAllAdsAbove30.length> 0){
+                for(let i=0; i< DeleteAllAdsAbove30.length;i++){
+                    await PostAdInSellModal.findByIdAndDelete({ _id: DeleteAllAdsAbove30[i]._id})
+                }
+
+            }
+
+            const ads = await PostAdInSellModal.find({ Catagories: catagories,  createdAt: { $gte: thirtyDaysAgo } })
             .skip((page - 1) * perPage)
             .limit(perPage)
             .exec();
 
 
-        const myCityAds = ads.filter(ad => ad.City == city)
-        const otherCityAds = ads.filter(ad => ad.City != city)
+            const myCityAds = ads.filter(ad => ad.City == city)
+            const otherCityAds = ads.filter(ad => ad.City != city)
 
-        const attachCity = [...myCityAds, ...otherCityAds]
+            const attachCity = [...myCityAds, ...otherCityAds]
 
 
-        const totalAdsCount = await PostAdInSellModal.countDocuments({ Categories: catagories });
+            const totalAdsCount = await PostAdInSellModal.countDocuments({ Categories: catagories });
 
-        if (ads.length > 0) {
+            if (ads.length > 0) {
 
-            res.send({
-                "success": true,
-                "message": "All Ads",
-                "data": attachCity,
-                "currentPage": page,
-                "totalPages": Math.ceil(totalAdsCount / perPage)
+                res.send({
+                    "success": true,
+                    "message": "All Ads",
+                    "data": attachCity,
+                    "currentPage": page,
+                    "totalPages": Math.ceil(totalAdsCount / perPage)
 
-            })
-        } else {
+                })
+            } else {
+                res.send({
+                    "success": false,
+                    "message": "No ad found",
+                    "totalPages": Math.ceil(totalAdsCount / perPage)
+
+                })
+            }
+        } catch (error) {
             res.send({
                 "success": false,
-                "message": "No ad found",
-                "totalPages": Math.ceil(totalAdsCount / perPage)
+                "message": error.message,
 
             })
         }
@@ -133,11 +152,22 @@ class AdPostController {
         const { page, city } = req.body;
         const perPage = 10;
 
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
+
         try {
-            const getAllAds = await PostAdInSellModal.find()
-                .skip((page - 1) * perPage)
-                .limit(perPage)
-                .exec();
+            const DeleteAllAdsAbove30 = await PostAdInSellModal.find({ createdAt: { $lte: thirtyDaysAgo } })
+            if(DeleteAllAdsAbove30.length> 0){
+                for(let i=0; i< DeleteAllAdsAbove30.length;i++){
+                    await PostAdInSellModal.findByIdAndDelete({ _id: DeleteAllAdsAbove30[i]._id})
+                }
+
+            }
+
+            const getAllAds = await PostAdInSellModal.find({ createdAt: { $gte: thirtyDaysAgo } })
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .exec();
 
             console.log("city", city)
 
@@ -195,6 +225,24 @@ class AdPostController {
         }
 
 
+    }
+
+    static async DeleteSellAds(req, res) {
+        const ID = req.params.ID
+
+        try {
+            await PostAdInSellModal.findOneAndDelete({_id: ID})
+
+            res.send({
+                success: true,
+                message: "Ad deleted successfuly."
+            });
+        } catch (error) {
+            res.send({
+                success: false,
+                message: error.message
+            });
+        }
     }
     //sell Products end
 
