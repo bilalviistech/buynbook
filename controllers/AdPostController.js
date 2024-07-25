@@ -3,6 +3,7 @@ const PostAdInInstallmentModal = require('../models/PostInstallmentAdModal.js')
 const PostAdInBookingModal = require('../models/PostBookAdModal.js');
 const uploadImageToS3 = require('../aws/S3Bucket.js');
 const UploadingToAws = require('../aws/UploadingToAws.js');
+const User = require('../models/UserModal.js')
 
 class AdPostController {
 
@@ -226,7 +227,6 @@ class AdPostController {
 
 
     }
-
     static async DeleteSellAds(req, res) {
         const ID = req.params.ID
 
@@ -250,93 +250,155 @@ class AdPostController {
 
     //so now i am starting the installment apis
 
+    static async InstallmentVerifyAcc(req, res) {
+
+        try {
+            const UserId = req.user._id
+            const { nic } = req.body
+            const { FrontPic, BackPic } = req.files;
+    
+            const FrontPicObj = FrontPic[0];
+            if(!FrontPicObj){
+                res.send({
+                    success: false,
+                    Message: "Front pic must be attached."
+                })
+            }
+
+            const BackPicObj = BackPic[0]
+            if(!BackPicObj){
+                res.send({
+                    success: false,
+                    Message: "Back pic must be attached."
+                })
+            }
+    
+            const Obj = {
+                nic : nic,
+                FrontPic: FrontPicObj.path,
+                BackPic: BackPicObj.path
+            }
+    
+            await User.findByIdAndUpdate({_id: UserId}, {
+                $set: {
+                    UserVerify: Obj,
+                    InstallmentVerify: true
+                }
+            })
+    
+            res.send({
+                success: true,
+                Message: "Verified your account."
+            })
+        } catch (error) {
+            res.send({
+                success: false,
+                Message: error.message
+            })
+        }
+    }
+
     static async PostAdsInInstallment(req, res) {
 
         const userData = req.user;
 
-        if (!req.files || req.files.length === 0) {
-            return res.status(400).json({ error: 'No files uploaded' });
-        }
-
-        const { Post_Description, Post_Like, Catagories, Product_name, Advance_Payment, Monthly_Payment, Total_Month_Of_Installment, Brand, Condition, Mileage, Engine_CC, Phone_Number, Optional_Number, City, location, Home_Type, Age, Gender, Room, BathRoom } = req.body
-
-        if (Product_name == undefined) {
-            res.send({
-                "Status": false,
-                "Message": "Please enter a name"
-            })
-        } else if (Phone_Number == undefined) {
-            res.send({
-                "Status": false,
-                "Message": "Please enter a Phone Number"
-            })
-        } else if (Advance_Payment == undefined) {
-            res.send({
-                "Status": false,
-                "Message": "Please enter a Advancement Payment"
-            })
-        } else if (Monthly_Payment == undefined) {
-            res.send({
-                "Status": false,
-                "Message": "Please enter a Monthly Payment"
-            })
-        } else if (Total_Month_Of_Installment == undefined) {
-            res.send({
-                "Status": false,
-                "Message": "Please enter a Total Monthly Payment"
-            })
-        } else if (location == undefined) {
-            res.send({
-                "Status": false,
-                "Message": "Please enter a Location"
-            })
-        } else if (City == undefined) {
-            res.send({
-                "Status": false,
-                "Message": "Please enter a City"
-            })
-        } else {
-            const AllUploadedImages = await UploadingToAws(req)
-
-            const PostSellAd = new PostAdInInstallmentModal({
-                userId: userData._id,
-                Profile_Picture: userData.Profile_Picture,
-                name: userData.name,
-                Post_Description: Post_Description,
-                Post_Like: Post_Like,
-                Catagories: Catagories,
-                AdType: "installment",
-                Product_name: Product_name,
-                Advance_Payment: Advance_Payment,
-                Monthly_Payment: Monthly_Payment,
-                Total_Month_Of_Installment: Total_Month_Of_Installment,
-                Brand: Brand,
-                Condition: Condition,
-                Ad_Image: AllUploadedImages,
-                Optional_Number: Optional_Number,
-                City: City,
-                location: location,
-                Phone_Number: Phone_Number,
-                Mileage: Mileage,
-                Engine_CC: Engine_CC,
-                Home_Type: Home_Type,
-                Age: Age,
-                Gender: Gender,
-                Room: Room,
-                BathRoom: BathRoom
-            })
-
-            PostSellAd.save().then(() => {
-                res.send({
-                    "Status": true,
-                    "Message": "Successfilly added"
+        try {
+            if(userData.InstallmentVerify === false){
+                return res.send({
+                    Status: false,
+                    Message: "Verify your account"
                 })
-            }).catch(err => {
-                console.log(err)
+            }
+    
+            if (!req.files || req.files.length === 0) {
+                return res.status(400).json({ error: 'No files uploaded' });
+            }
+    
+            const { Post_Description, Post_Like, Catagories, Product_name, Advance_Payment, Monthly_Payment, Total_Month_Of_Installment, Brand, Condition, Mileage, Engine_CC, Phone_Number, Optional_Number, City, location, Home_Type, Age, Gender, Room, BathRoom } = req.body
+    
+            if (Product_name == undefined) {
                 res.send({
                     "Status": false,
-                    "Message": "Something wennt wrong"
+                    "Message": "Please enter a name"
                 })
+            } else if (Phone_Number == undefined) {
+                res.send({
+                    "Status": false,
+                    "Message": "Please enter a Phone Number"
+                })
+            } else if (Advance_Payment == undefined) {
+                res.send({
+                    "Status": false,
+                    "Message": "Please enter a Advancement Payment"
+                })
+            } else if (Monthly_Payment == undefined) {
+                res.send({
+                    "Status": false,
+                    "Message": "Please enter a Monthly Payment"
+                })
+            } else if (Total_Month_Of_Installment == undefined) {
+                res.send({
+                    "Status": false,
+                    "Message": "Please enter a Total Monthly Payment"
+                })
+            } else if (location == undefined) {
+                res.send({
+                    "Status": false,
+                    "Message": "Please enter a Location"
+                })
+            } else if (City == undefined) {
+                res.send({
+                    "Status": false,
+                    "Message": "Please enter a City"
+                })
+            } else {
+                const AllUploadedImages = await UploadingToAws(req)
+    
+                const PostSellAd = new PostAdInInstallmentModal({
+                    userId: userData._id,
+                    Profile_Picture: userData.Profile_Picture,
+                    name: userData.name,
+                    Post_Description: Post_Description,
+                    Post_Like: Post_Like,
+                    Catagories: Catagories,
+                    AdType: "installment",
+                    Product_name: Product_name,
+                    Advance_Payment: Advance_Payment,
+                    Monthly_Payment: Monthly_Payment,
+                    Total_Month_Of_Installment: Total_Month_Of_Installment,
+                    Brand: Brand,
+                    Condition: Condition,
+                    Ad_Image: AllUploadedImages,
+                    Optional_Number: Optional_Number,
+                    City: City,
+                    location: location,
+                    Phone_Number: Phone_Number,
+                    Mileage: Mileage,
+                    Engine_CC: Engine_CC,
+                    Home_Type: Home_Type,
+                    Age: Age,
+                    Gender: Gender,
+                    Room: Room,
+                    BathRoom: BathRoom
+                })
+    
+                PostSellAd.save().then(() => {
+                    res.send({
+                        "Status": true,
+                        "Message": "Successfilly added"
+                    })
+                }).catch(err => {
+                    console.log(err)
+                    res.send({
+                        "Status": false,
+                        "Message": "Something wennt wrong"
+                    })
+                })
+            }
+        } catch (error) {
+            res.send({
+                "Status": false,
+                "Message": error.message
             })
         }
     }

@@ -30,7 +30,15 @@ const UserModal = mongoose.Schema({
     },
     city: String,
     socketId: String,
-    InstallemtProvider: Boolean
+    InstallemtProvider: Boolean,
+    InstallmentVerify:{
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    UserVerify: {
+        type: Object,
+    }
     
 },{timestamps: true})
 

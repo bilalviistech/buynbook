@@ -26,6 +26,18 @@ const Profile_Picture_Upload = multer({
     storage: Profile_Picture_Storage
 })
 
+//multer code upload profile picture
+const Verify_Nic_Storage = multer.diskStorage({
+    destination: './upload/images/NIC',
+    filename: (req, file, cb) => {
+        const splitString = file.mimetype.split('image/')
+        cb(null, Date.now() + '.' + splitString[1]);
+    }
+})
+const Verify_Nic_Upload = multer({
+    storage: Verify_Nic_Storage
+})
+
 
 
 //multer code upload Sell picture
@@ -51,6 +63,7 @@ Route.use('/DeleteSellAds', checkUserAuth)
 Route.use('/PostAdsInInstallment', checkUserAuth)
 Route.use('/GetInstallmentAdsByCatagories', checkUserAuth)
 Route.use('/GetAllInstallmentAds', checkUserAuth)
+Route.use('/InstallmentVerifyAcc', checkUserAuth)
 //Booking route
 Route.use('/PostAdsInBooking', checkUserAuth)
 Route.use('/GetBookingAdsByCatagories', checkUserAuth)
@@ -81,6 +94,8 @@ Route.post('/DeleteSellAds/:ID', AdPostController.DeleteSellAds)
 Route.post('/PostAdsInInstallment', Post_Installment_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdsInInstallment)
 Route.post('/GetInstallmentAdsByCatagories', AdPostController.GetInstallmentAdsByCatagories)
 Route.post('/GetAllInstallmentAds', AdPostController.GetAllInstallmentAds)
+Route.post('/InstallmentVerifyAcc', Verify_Nic_Upload.fields([ { name: 'FrontPic', maxCount: 1 }, { name: 'BackPic', maxCount: 1 } ]),AdPostController.InstallmentVerifyAcc)
+
 
 //Booking Route
 Route.post('/PostAdsInBooking', Post_Booking_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdsInBooking)
