@@ -59,6 +59,7 @@ Route.use('/PostAdInSell', checkUserAuth)
 Route.use('/GetAdsByCatagories', checkUserAuth)
 Route.use('/GetAllSellAds', checkUserAuth)
 Route.use('/DeleteSellAds', checkUserAuth)
+Route.use('/GetAllAds', checkUserAuth)
 //installment route
 Route.use('/PostAdsInInstallment', checkUserAuth)
 Route.use('/GetInstallmentAdsByCatagories', checkUserAuth)
@@ -83,6 +84,9 @@ Route.post('/resetForgetPassword', AuthController.resetForgetPassword)
 //Protected Route
 //get user data by uid
 Route.post('/getUserById', UserController.getUserById)
+
+//get all my ads
+Route.get('/GetAllAds', AdPostController.GetAllAds)
 
 //sell Route
 Route.post('/PostAdInSell', Post_Sell_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdInSell)

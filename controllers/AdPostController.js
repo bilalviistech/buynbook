@@ -246,8 +246,6 @@ class AdPostController {
     }
     //sell Products end
 
-
-
     //so now i am starting the installment apis
 
     static async InstallmentVerifyAcc(req, res) {
@@ -520,8 +518,6 @@ class AdPostController {
     //Installment Products end
 
 
-
-
     //so now i am starting the Booking apis
 
     static async PostAdsInBooking(req, res) {
@@ -707,6 +703,32 @@ class AdPostController {
     }
     //Booking Products end
 
+    // Get All Ads
+    static async GetAllAds(req, res) {
+        try {
+            const UserId = req.user._id;
+    
+            // Run queries in parallel
+            const [SellAds, InInstallmentAds, BookingAds] = await Promise.all([
+                PostAdInSellModal.find({ id: UserId }),
+                PostAdInInstallmentModal.find({ id: UserId }),
+                PostAdInBookingModal.find({ id: UserId })
+            ]);
+    
+            const AllAds = [...SellAds, ...InInstallmentAds, ...BookingAds];
+    
+            res.status(200).json({
+                success: true,
+                data: AllAds
+            });
+        } catch (error) {
+            res.status(200).json({
+                success: false,
+                message: error.message
+            });
+        }
+    }
+    
 
 
 
