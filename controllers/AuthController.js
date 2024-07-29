@@ -88,7 +88,7 @@ class AuthController {
             if (isHashMatch) {
                 // Generate a JWT token and send the user's data without the password
                 const token = JWT.sign({ UserID: user._id }, "FallInVeterahbadubwadbsahd", { expiresIn: '2y' });
-                const userData = { _id: user._id, name: user.name, email: user.email, tc: user.tc, role: user.role, Profile_Picture: user.Profile_Picture, city: user.city };
+                const userData = { _id: user._id, name: user.name, email: user.email, tc: user.tc, role: user.role, Profile_Picture: user.Profile_Picture, city: user.city, InstallmentVerify: user.InstallmentVerify };
 
                 return res.send({
                     "status": "Success",

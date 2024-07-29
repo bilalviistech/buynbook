@@ -32,9 +32,10 @@ const UserModal = mongoose.Schema({
     socketId: String,
     InstallemtProvider: Boolean,
     InstallmentVerify:{
-        type: Boolean,
+        type: String,
         required: true,
-        default: false
+        enum: ["Not Applied","Pending","Approved","Rejected"],
+        default: "Not Applied"
     },
     UserVerify: {
         type: Object,

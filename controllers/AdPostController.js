@@ -229,9 +229,18 @@ class AdPostController {
     }
     static async DeleteSellAds(req, res) {
         const ID = req.params.ID
+        const Adtype = req.params.type
 
         try {
-            await PostAdInSellModal.findOneAndDelete({_id: ID})
+            if(Adtype === "sell"){
+                await PostAdInSellModal.findOneAndDelete({_id: ID})
+            }
+            else if(Adtype === "installment"){
+                await PostAdInInstallmentModal.findOneAndDelete({_id: ID})
+            }
+            else if(Adtype === "booking"){
+                await PostAdInBookingModal.findOneAndDelete({_id: ID})
+            }
 
             res.send({
                 success: true,
@@ -280,13 +289,13 @@ class AdPostController {
             await User.findByIdAndUpdate({_id: UserId}, {
                 $set: {
                     UserVerify: Obj,
-                    InstallmentVerify: true
+                    InstallmentVerify: "Pending"
                 }
             })
     
             res.send({
                 success: true,
-                Message: "Verified your account."
+                Message: "Verifying your account."
             })
         } catch (error) {
             res.send({
