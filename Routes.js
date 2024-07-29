@@ -60,6 +60,7 @@ Route.use('/GetAdsByCatagories', checkUserAuth)
 Route.use('/GetAllSellAds', checkUserAuth)
 Route.use('/DeleteSellAds', checkUserAuth)
 Route.use('/GetAllAds', checkUserAuth)
+Route.use('/GetInstallmentStatus', checkUserAuth)
 //installment route
 Route.use('/PostAdsInInstallment', checkUserAuth)
 Route.use('/GetInstallmentAdsByCatagories', checkUserAuth)
@@ -87,6 +88,7 @@ Route.post('/getUserById', UserController.getUserById)
 
 //get all my ads
 Route.get('/GetAllAds', AdPostController.GetAllAds)
+Route.get('/GetInstallmentStatus', AdPostController.GetInstallmentStatus)
 
 //sell Route
 Route.post('/PostAdInSell', Post_Sell_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdInSell)

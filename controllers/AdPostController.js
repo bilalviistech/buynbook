@@ -524,6 +524,24 @@ class AdPostController {
 
 
     }
+
+    static async GetInstallmentStatus(req, res) {
+        try {
+            const UserId = req.user._id
+
+            const UserStatus = await User.findOne({_id: UserId})
+    
+            res.status(200).json({
+                success: true,
+                data: UserStatus
+            })
+        } catch (error) {
+            res.status(200).json({
+                success: false,
+                message: error.message
+            })
+        }
+    }
     //Installment Products end
 
 
