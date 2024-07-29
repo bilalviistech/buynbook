@@ -227,7 +227,7 @@ class AdPostController {
 
 
     }
-    static async DeleteSellAds(req, res) {
+    static async DeleteMyAds(req, res) {
         const ID = req.params.ID
         const Adtype = req.params.type
 

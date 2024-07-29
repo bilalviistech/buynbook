@@ -92,7 +92,7 @@ Route.get('/GetAllAds', AdPostController.GetAllAds)
 Route.post('/PostAdInSell', Post_Sell_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdInSell)
 Route.post('/GetSellAdsByCatagories', AdPostController.GetSellAdsByCatagories)
 Route.post('/GetAllSellAds', AdPostController.GetAllSellAds)
-Route.post('/DeleteSellAds/:ID/:type', AdPostController.DeleteSellAds)
+Route.post('/DeleteMyAds/:ID/:type', AdPostController.DeleteMyAds)
 
 //Installment Route
 Route.post('/PostAdsInInstallment', Post_Installment_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdsInInstallment)
