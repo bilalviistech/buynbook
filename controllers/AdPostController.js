@@ -262,7 +262,7 @@ class AdPostController {
         try {
             const UserId = req.user._id
             const { nic } = req.body
-            const { FrontPic, BackPic } = req.files;
+            const { FrontPic, BackPic, ProfilePic } = req.files;
     
             const FrontPicObj = FrontPic[0];
             if(!FrontPicObj){
@@ -279,11 +279,20 @@ class AdPostController {
                     Message: "Back pic must be attached."
                 })
             }
+
+            const ProfilePicObj = ProfilePic[0]
+            if(!ProfilePicObj){
+                res.send({
+                    success: false,
+                    Message: "Profile pic must be attached."
+                })
+            }
     
             const Obj = {
                 nic : nic,
                 FrontPic: FrontPicObj.path,
-                BackPic: BackPicObj.path
+                BackPic: BackPicObj.path,
+                ProfilePic: ProfilePicObj.path,
             }
     
             await User.findByIdAndUpdate({_id: UserId}, {

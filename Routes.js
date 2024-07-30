@@ -85,6 +85,7 @@ Route.post('/resetForgetPassword', AuthController.resetForgetPassword)
 //Protected Route
 //get user data by uid
 Route.post('/getUserById', UserController.getUserById)
+Route.get('/GetAllUser', UserController.GetAllUser)
 
 //get all my ads
 Route.get('/GetAllAds', AdPostController.GetAllAds)
@@ -100,7 +101,7 @@ Route.post('/DeleteMyAds/:ID/:type', AdPostController.DeleteMyAds)
 Route.post('/PostAdsInInstallment', Post_Installment_PictureUpload.array('Ad_Image', 3), AdPostController.PostAdsInInstallment)
 Route.post('/GetInstallmentAdsByCatagories', AdPostController.GetInstallmentAdsByCatagories)
 Route.post('/GetAllInstallmentAds', AdPostController.GetAllInstallmentAds)
-Route.post('/InstallmentVerifyAcc', Verify_Nic_Upload.fields([ { name: 'FrontPic', maxCount: 1 }, { name: 'BackPic', maxCount: 1 } ]),AdPostController.InstallmentVerifyAcc)
+Route.post('/InstallmentVerifyAcc', Verify_Nic_Upload.fields([ { name: 'FrontPic', maxCount: 1 }, { name: 'BackPic', maxCount: 1 }, { name: 'ProfilePic', maxCount: 1 } ]),AdPostController.InstallmentVerifyAcc)
 
 
 //Booking Route

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'); // include mongodb package
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 
 const UserModal = mongoose.Schema({
@@ -43,6 +44,7 @@ const UserModal = mongoose.Schema({
     
 },{timestamps: true})
 
+UserModal.plugin(mongoosePaginate);
 const User = mongoose.model('User', UserModal);
 
 module.exports  =  User;

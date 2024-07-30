@@ -19,6 +19,25 @@ class UserController {
             })
         }
     }
+
+    static async GetAllUser (req, res)  {
+        try {
+            const PageNumber = req.query.page || 1;
+            const PageLimitData = 10;
+    
+            const AllUser = await User.paginate({ page: PageNumber, limit: PageLimitData })
+    
+            res.status(200).json({
+                success: true,
+                data: AllUser
+            })
+        } catch (error) {
+            res.status(200).json({
+                success: false,
+                message: error.message
+            })
+        }
+    }
 }
 
 
